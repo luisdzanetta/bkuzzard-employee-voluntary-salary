@@ -4,7 +4,7 @@ import pandas as pd
 
 # %%
 # Read the CSV file containing Blizzard employee salary data
-df_blizzard_salary = pd.read_csv(r'C:\Users\LuisDZ\Desktop\projects\blizzard-employee-voluntary-salary-pandas\data\blizzard_salary.csv')
+df_blizzard_salary = pd.read_csv('./data/blizzard_salary.csv')
 
 # %%
 # Display the DataFrame to check the contents
