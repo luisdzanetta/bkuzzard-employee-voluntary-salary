@@ -110,7 +110,7 @@ df_blizzard_salary.describe()
 
 
 # %% [markdown]
-# #### Categorical Variables
+# #### **Categorical Variables**
 
 # %%
 #
@@ -149,13 +149,74 @@ axs[1].set_title('Payment Frequency')
 plt.show()
 
 # %%
-# Location x salary
+# Status & Salary Type
+df_blizzard_salary.groupby(['salary_type'])['current_salary'].mean().sort_values(ascending=False)
+
+'''
+Para estimar quanto ganha por ano esses colaboradores que recebem por semana/hora
+
+Média por semana = 1625*52(weeks by year) = 84,500.00
+Média por hora = 30.29 * 2,080(hours by year) = 63,0003.20
+
+'''
+
+# %%
+top_titles = df_blizzard_salary['current_title'].value_counts().nlargest(20)
+
+# %%
+# Current Title
+fig, axs = plt.subplots(1, 1, figsize = (8, 10))
+
+sns.barplot(x=top_titles.values, y=top_titles.index, errorbar=None)
+axs.bar_label(axs.containers[0], fontsize=10)
+plt.title('Employment Title')
+
+plt.show()
+
+# %%
+# Check current_title
+df_blizzard_salary_sorted = df_blizzard_salary.sort_values(by='current_title')
+
+print(df_blizzard_salary_sorted['current_title'].unique())
+
+'''
+Incosistência identificadas visualmente
+- I e 1 (serve para outros números também)
+- Sr. e Senior
+- tem um analyst especificado: 'Analyst, Threat Intelligence and Partner Services'
+-  'Associate Character Artist' 'Associate 3D Artist' 'Associate 3D Artist (Character Artist)' 'Associate Artist'
+- Associate PM (my range is on the same scale as PM, but not my actual title)
+- o que são esses "in Test"?
+- "Can't say (loss of anonimity)"
+- 'Choose not to disclose'
+- 'Cinematic Animator - Temp' temporário?
+- 'Customer Support Specialist Game Master' e 'Game Master' 'Game Master TR'
+-  'Position in II tier'
+- 'Principle Software Engineer I' PRINCIPLE?
+- 'SR. Financial Analyst'
+- 'Senior 1'
+- 'Senior Software Egr 1.-'
+- CASE SENSITIVY, PADRONIZAR
+- 'User Researcher' OU UX?
+- 'X' ?????
+'''
+
+# %%
+# Location
 fig, axs = plt.subplots(1, 1, figsize = (8, 5))
 
 sns.histplot(data=df_blizzard_salary, y=df_blizzard_salary['location'])
 plt.title('Employment Office Location')
 
 plt.show()
+
+'''
+Aqui também vamos precisar ajustar as categorias
+- Los Angeles Center Studios = Los Angeles
+- Versailles = versailles
+- Laid off 3/16 drop?
+- Work From Home - Virginia drop?
+'''
 
 # %%
 # Interessante, não tem pessoa com as faixas mais altas de salário fora de irvine
@@ -178,6 +239,14 @@ sns.histplot(data=df_blizzard_salary, x=df_blizzard_salary['performance_rating']
 plt.title('Performance Rating Review')
 
 plt.show()
+
+'''
+Aqui talvez seja legal adicionar a ordem de grandeza. Entendi que é (do menor para o maior):
+- developing
+- successful
+- high
+- top
+'''
 
 # %%
 # Interessante, não tem pessoa com top e developing nas faixas mais altas de salário
@@ -207,14 +276,14 @@ axs[1].set_title('Raise given (%) Histogram')
 
 plt.show()
 
-
+'''
+no current_salary, precisamos corrigir os valores de quem é pago por semana e por hora (fazer uma estimativa)
+'''
 # %%
-df_blizzard_salary['current_salary'].hist(bins=50)
-
-# %%
-df_blizzard_salary['percent_incr'].hist(bins=50)
-
-
+df_blizzard_salary['percent_incr'].value_counts()
+'''
+talvez faça sentido criar agrupamentos de incremento. Porém, a grande maioria foi até 4%
+'''
 
 
 
