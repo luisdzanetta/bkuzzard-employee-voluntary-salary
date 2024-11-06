@@ -1,31 +1,23 @@
-'''
- what we need to do
- 1. drop data where current_salary == 1 AND salary_type == 1
- 2. drop data where current_title == NaN
- 3. dropd data where current_salary = NaN (df_blizzard_salary.dropna(subset=['status', 'current_salary'], how='any'))
- 3. filter only status == full time employee
- 4. adjust current_title string, sometimes the level of status is I othertimes is 1
- 5. 2 caminhos no salary_type, podemos dropar os que são hora/semana ou calcular um valor aproximado de salário
-
-'''
-
 # %% [markdown]
 # # **Blizzard Employee Voluntary Salary Exploratoy Data Analysis**
+#
+# ---
 
 # %% [markdown]
 # ## **Context**
-
-# ------
-
-# Blizzard Entertainment, Inc. is a prominent American video game developer and publisher located in Irvine, California, and operates as a subsidiary of Activision Blizzard. Established in 1991, the company is renowned for its creation of the influential MMORPG World of Warcraft (2004) and successful franchises such as Diablo, StarCraft, and Overwatch. Blizzard also runs Battle.net, an online gaming platform[1].
+# Blizzard Entertainment, Inc. is a prominent American video game developer and publisher located in Irvine, California, and operates as a subsidiary of Activision Blizzard. Established in 1991, the company is renowned for its creation of the influential MMORPG World of Warcraft (2004) and successful franchises such as Diablo, StarCraft, and Overwatch.
+# Blizzard also runs Battle.net, an online gaming platform [1].
 #
-# In 2020, employees at Blizzard have taken steps to address concerns regarding wage disparities by circulating an anonymous spreadsheet detailing salaries and pay increases. This initiative reflects growing discontent within the company, particularly following a 2019 internal survey that revealed significant dissatisfaction with compensation among staff. With many employees feeling undervalued despite the company's financial success, this analysis aims to explore the salary data shared by employees to uncover patterns and insights related to compensation equity across different roles within Blizzard. By examining this data, we hope to shed light on the broader issues of wage disparity and employee satisfaction in the gaming industry[2].
+# In 2020, employees at Blizzard have taken steps to address concerns regarding wage disparities by circulating an anonymous spreadsheet detailing salaries and pay increases. This initiative reflects growing discontent within the company, particularly following a 2019 internal survey that revealed significant dissatisfaction with compensation among staff. With many employees feeling undervalued despite the company's financial success,
+# this analysis aims to explore the salary data shared by employees to uncover patterns and insights related to compensation equity across different roles within Blizzard.
+# By examining this data, we hope to shed light on the broader issues of wage disparity and employee satisfaction in the gaming industry [2].
 #
 # <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blizzard_Entertainment_Logo_2015.svg/1200px-Blizzard_Entertainment_Logo_2015.svg.png" width="300" height="156.25">
 #
+
 # %% [markdown]
 # ## **Objective**
-# ------
+# 
 
 # %% [markdown]
 # ## **Dictionary**
@@ -54,6 +46,7 @@
 # 3. [Bloomberg, 2020](https://www.bloomberg.com/news/articles/2020-08-03/blizzard-workers-share-salaries-in-revolt-over-wage-disparities)
 # 4. [OpenInto, 2020](https://www.openintro.org/data/index.php?data=blizzard_salary)
 # 5. [Kaggle, 2024](https://www.kaggle.com/datasets/mexwell/blizzard-employee-voluntary-salary-info)
+# 6. [Ellow, 2024](https://ellow.io/contract-work-vs-full-time-employment/)
 
 # %% [markdown]
 # ## **Exploratory Data Analysis**
@@ -70,12 +63,10 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-import plotly.express as px
-import plotly.graph_objects as go
 
 # %% [markdown]
 # #### **Data Load**
-
+# ---
 # %%
 # Read the CSV file containing Blizzard employee salary data
 df_blizzard_salary = pd.read_csv('./data/blizzard_salary.csv')
@@ -88,83 +79,98 @@ df_blizzard_salary = pd.read_csv('./data/blizzard_salary.csv')
 df_blizzard_salary.info(memory_usage='deep')
 
 # %%
+# Check the dimensions of the DataFrame
 df_blizzard_salary.shape
 
 # %%
-# Show the first few rows of the DataFrame for a quick overview
+# Show the first few rows for a quick overview
 df_blizzard_salary.head()
 
 # %%
+# List all column names
 df_blizzard_salary.columns
 
 # %%
-# Show the first few rows of the DataFrame for a quick overview
+# Show detailed information including non-null counts and data types
 df_blizzard_salary.info()
 
 # %%
+# Display data types of each column
 df_blizzard_salary.dtypes
 
 # %%
-# Provide descriptive statistics
+# Provide descriptive statistics for numerical columns
 df_blizzard_salary.describe()
 
 
 # %% [markdown]
 # #### **Categorical Variables**
 
-# %%
+# %%[markdown]
+# **Status**
 #
+# The 'status' column has two contract options: Full Time Employee and Contractor
+# Full Time Employee refers to conventional employment (similar to CLT in Brazil), while Contractor resembles freelance work. [6]
+
+# %%
+# This displays unique employment statuses
 print(df_blizzard_salary['status'].unique())
-print('')
-print(df_blizzard_salary['current_title'].unique())
-print('')
-print(df_blizzard_salary['salary_type'].unique())
-print('')
-print(df_blizzard_salary['location'].unique())
-print('')
-print(df_blizzard_salary['performance_rating'].unique())
-
 
 # %%
-print(df_blizzard_salary['status'].value_counts())
-print('')
-print(df_blizzard_salary['current_title'].value_counts())
-print('')
-print(df_blizzard_salary['salary_type'].value_counts())
-print('')
-print(df_blizzard_salary['location'].value_counts())
-print('')
-print(df_blizzard_salary['performance_rating'].value_counts())
+# Visualization of employment status distribution using a histogram
+fig, axs = plt.subplots(1, 1, figsize = (8, 5))
 
-# %%
-# Status & Salary Type
-fig, axs = plt.subplots(1, 2, figsize = (10, 5))
-
-sns.histplot(df_blizzard_salary['status'], ax=axs[0])
-axs[0].set_title('Employment Status')
-
-sns.histplot(df_blizzard_salary['salary_type'], ax=axs[1])
-axs[1].set_title('Payment Frequency')
+sns.histplot(data=df_blizzard_salary, x=df_blizzard_salary['status'])
+plt.title('Employment Status (Contract Type)')
 
 plt.show()
 
+
+# %%[markdown]
+# **Current Title**
+#
+# The Current Title column represents employee job titles with 202 unique values.
+# Notable inconsistencies include:
+# 1. Lack of standardization in job levels (e.g., I vs. 1).
+# 2. Inconsistencies in seniority descriptors (e.g., Sr. vs. Senior).
+# 3. Non-standardized job titles (e.g., 'Customer Support Specialist Game Master' vs 'Game Master').
+# 4. Incomplete entries (e.g., 'Senior 1', 'X', or 'Can't say').
+
+# 1. Falta de padronização no nível dos cargos (e.g., I e 1);
+# 2. Falta de padronização na senioridade dos cargos (e.g., exemplo: Sr. e Senior);
+# 3. Falta de padronização no preenchimento do cargo:
+# - 'Customer Support Specialist Game Master' e 'Game Master' 'Game Master TR';
+# - 'Associate Character Artist', 'Associate 3D Artist', 'Associate 3D Artist (Character Artist)', 'Associate Artist';
+# - 'User Researcher', 'UX Researcher';
+# - 'Senior Software Egr 1.-';
+# - 'Principle Software Engineer I';
+# - 'Analyst, Threat Intelligence and Partner Services';
+# - 'Associate PM (my range is on the same scale as PM, but not my actual title)';
+# 4. Preenchimentos incompletos:
+# - 'Senior 1';
+# - 'Position in II tier';
+# - 'X';
+# - 'Can't say (loss of anonimity)';
+# - 'Choose not to disclose';
+# 5. Indicações de 'Temp' e'In Test';
+# 6. Falta de padronização de letras maiúsculas/minúsculas.
+
 # %%
-# Status & Salary Type
-df_blizzard_salary.groupby(['salary_type'])['current_salary'].mean().sort_values(ascending=False)
-
-'''
-Para estimar quanto ganha por ano esses colaboradores que recebem por semana/hora
-
-Média por semana = 1625*52(weeks by year) = 84,500.00
-Média por hora = 30.29 * 2,080(hours by year) = 63,0003.20
-
-'''
+# This counts occurrences of each job title
+print(df_blizzard_salary['current_title'].value_counts())
 
 # %%
+# 
 top_titles = df_blizzard_salary['current_title'].value_counts().nlargest(20)
 
 # %%
-# Current Title
+# 
+df_blizzard_salary_sorted = df_blizzard_salary.sort_values(by='current_title')
+
+print(df_blizzard_salary_sorted['current_title'].unique())
+
+# %%
+# Visualization of job title distribution using a bar plot
 fig, axs = plt.subplots(1, 1, figsize = (8, 10))
 
 sns.barplot(x=top_titles.values, y=top_titles.index, errorbar=None)
@@ -173,36 +179,38 @@ plt.title('Employment Title')
 
 plt.show()
 
-# %%
-# Check current_title
-df_blizzard_salary_sorted = df_blizzard_salary.sort_values(by='current_title')
-
-print(df_blizzard_salary_sorted['current_title'].unique())
-
-'''
-Incosistência identificadas visualmente
-- I e 1 (serve para outros números também)
-- Sr. e Senior
-- tem um analyst especificado: 'Analyst, Threat Intelligence and Partner Services'
--  'Associate Character Artist' 'Associate 3D Artist' 'Associate 3D Artist (Character Artist)' 'Associate Artist'
-- Associate PM (my range is on the same scale as PM, but not my actual title)
-- o que são esses "in Test"?
-- "Can't say (loss of anonimity)"
-- 'Choose not to disclose'
-- 'Cinematic Animator - Temp' temporário?
-- 'Customer Support Specialist Game Master' e 'Game Master' 'Game Master TR'
--  'Position in II tier'
-- 'Principle Software Engineer I' PRINCIPLE?
-- 'SR. Financial Analyst'
-- 'Senior 1'
-- 'Senior Software Egr 1.-'
-- CASE SENSITIVY, PADRONIZAR
-- 'User Researcher' OU UX?
-- 'X' ?????
-'''
+# %%[markdown]
+# **Salary Type**
+#
+# In Salary Type, there are three methods for calculating salary: annually, weekly, and hourly.
+# Different calculation methods impact the values in 'current_salary', necessitating standardization.
 
 # %%
-# Location
+# This counts occurrences of each salary type
+print(df_blizzard_salary['salary_type'].value_counts())
+
+# %%
+# Visualization of salary type distribution using a histogram
+fig, axs = plt.subplots(1, 1, figsize = (8, 5))
+
+sns.histplot(data=df_blizzard_salary, x=df_blizzard_salary['salary_type'])
+plt.title('Salary Type')
+
+plt.show()
+
+# %%[markdown]
+# **Location**
+#
+# In Location, employees recorded their base allocations with some inconsistencies:
+# - Variations in city names (e.g., 'Los Angeles Center Studios' vs 'Los Angeles').
+# - Case sensitivity issues (e.g., 'Versailles' vs 'versailles').
+
+# %%
+# This counts occurrences of each location entry
+print(df_blizzard_salary['location'].value_counts())
+
+# %%
+# Visualization of location distribution using a histogram
 fig, axs = plt.subplots(1, 1, figsize = (8, 5))
 
 sns.histplot(data=df_blizzard_salary, y=df_blizzard_salary['location'])
@@ -210,13 +218,49 @@ plt.title('Employment Office Location')
 
 plt.show()
 
-'''
-Aqui também vamos precisar ajustar as categorias
-- Los Angeles Center Studios = Los Angeles
-- Versailles = versailles
-- Laid off 3/16 drop?
-- Work From Home - Virginia drop?
-'''
+# %%[markdown]
+# **Performance Rating**
+#
+# In **Performance Rating**, we have the classification of the last performance evaluation of employees, considering (from worst to best performance):
+# 1. 'developing'
+# 2. 'successful'
+# 3. 'high'
+# 4. 'top'
+
+# %%
+# This counts occurrences of each performance rating entry
+print(df_blizzard_salary['performance_rating'].value_counts())
+
+# %%
+# Visualization of performance ratings distribution using a histogram
+fig, axs = plt.subplots(1, 1, figsize = (8, 5))
+
+sns.histplot(data=df_blizzard_salary, x=df_blizzard_salary['performance_rating'])
+plt.title('Performance Rating Review')
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# %%
+# Status & Salary Type
+df_blizzard_salary.groupby(['salary_type'])['current_salary'].mean().sort_values(ascending=False)
+
 
 # %%
 # Interessante, não tem pessoa com as faixas mais altas de salário fora de irvine
@@ -286,11 +330,29 @@ talvez faça sentido criar agrupamentos de incremento. Porém, a grande maioria 
 '''
 
 
+# %% [markdown]
+
+
+'''
+Para estimar quanto ganha por ano esses colaboradores que recebem por semana/hora
+
+Média por semana = 1625*52(weeks by year) = 84,500.00
+Média por hora = 30.29 * 2,080(hours by year) = 63,0003.20
+
+'''
 
 
 
+'''
+ what we need to do
+ 1. drop data where current_salary == 1 AND salary_type == 1
+ 2. drop data where current_title == NaN
+ 3. dropd data where current_salary = NaN (df_blizzard_salary.dropna(subset=['status', 'current_salary'], how='any'))
+ 3. filter only status == full time employee
+ 4. adjust current_title string, sometimes the level of status is I othertimes is 1
+ 5. 2 caminhos no salary_type, podemos dropar os que são hora/semana ou calcular um valor aproximado de salário
 
-
+'''
 
 
 
