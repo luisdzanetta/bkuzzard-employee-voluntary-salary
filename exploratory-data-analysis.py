@@ -102,7 +102,6 @@ df_blizzard_salary.dtypes
 # Provide descriptive statistics for numerical columns
 df_blizzard_salary.describe()
 
-
 # %% [markdown]
 # #### **Categorical Variables**
 
@@ -124,7 +123,6 @@ sns.histplot(data=df_blizzard_salary, x=df_blizzard_salary['status'])
 plt.title('Employment Status (Contract Type)')
 
 plt.show()
-
 
 # %%[markdown]
 # **Current Title**
@@ -240,6 +238,85 @@ plt.title('Performance Rating Review')
 
 plt.show()
 
+# %% [markdown]
+# #### **Numerical Variables**
+
+# %%[markdown]
+# **Current Salary**
+#
+# In this variable, we have the amounts declared by employees in USD. 
+# As noted in the Salary Type variable, the declared amount can be annual, weekly, or hourly. 
+# The histogram shows a large number of values close to zero, which does not make much sense when considering annual salaries. 
+# Therefore, it will be necessary to standardize the salaries of these employees to a common basis for meaningful comparison.
+
+# %%
+# Visualization of current salary distribution using a histogram
+fig, axs = plt.subplots(1, 1, figsize = (10, 5))
+
+sns.histplot(df_blizzard_salary['current_salary'], kde = True)
+plt.title('Current Salary Histogram')
+
+plt.show()
+
+# %%
+# Create a new DataFrame containing only employees whose salary type is annual
+df_current_salary_year = df_blizzard_salary[df_blizzard_salary['salary_type'] == 'year'].copy()
+
+# %%
+# Visualization of current salary distribution for annual salaries using a histogram
+fig, axs = plt.subplots(1, 1, figsize = (10, 5))
+
+sns.histplot(df_current_salary_year['current_salary'], kde = True)
+plt.title('Current Salary Histogram')
+
+plt.show()
+
+# %%
+# Display the smallest current salaries
+smallest_salaries = df_blizzard_salary['current_salary'].nsmallest(20)
+smallest_salaries_year = df_current_salary_year['current_salary'].nsmallest(20)
+
+print(smallest_salaries)
+print(smallest_salaries_year)
+
+# %%
+# Sort and display current titles with their salary type and current salary
+print(df_blizzard_salary[['current_title', 'salary_type', 'current_salary']].sort_values)
+print(df_current_salary_year[['current_title', 'salary_type', 'current_salary']].sort_values)
+
+# %%
+# Visualization of current salary distributions using violin plots
+fig, axs = plt.subplots(1, 2, figsize = (20, 5))
+
+sns.violinplot(x=df_blizzard_salary['current_salary'], ax=axs[0])
+axs[0].set_title('Current Salary')
+
+sns.violinplot(x=df_current_salary_year['current_salary'], ax=axs[1])
+axs[1].set_title('Current Salary (Filtered by Year)')
+
+plt.show()
+
+# %%[markdown]
+# **Current Salary**
+#
+# In this variable, we have the percentage increase that employees received in 2020.
+
+# %%
+# Display the normalized value counts of percentage increases
+df_blizzard_salary['percent_incr'].value_counts(normalize=True)*100
+
+# %%
+# Provide descriptive statistics for the percentage increase
+df_blizzard_salary['percent_incr'].describe()
+
+# %%
+# Visualization of salary raise distribution using a histogram
+fig, axs = plt.subplots(1, 1, figsize = (8, 5))
+
+sns.histplot(data=df_blizzard_salary['percent_incr'])
+plt.title('Salary Raise (%)')
+
+plt.show()
 
 
 
@@ -305,32 +382,7 @@ plt.title('Current Salary by Performance Rating')
 
 plt.show()
 
-# %% [markdown]
-# #### Numerical Variables
 
-
-# %%
-fig, axs = plt.subplots(1, 2, figsize = (10, 5))
-
-sns.histplot(df_blizzard_salary['current_salary'], kde = True, ax=axs[0])
-axs[0].set_title('Current Salary Histogram')
-
-sns.histplot(df_blizzard_salary['percent_incr'], kde = True, ax=axs[1])
-axs[1].set_title('Raise given (%) Histogram')
-
-plt.show()
-
-'''
-no current_salary, precisamos corrigir os valores de quem é pago por semana e por hora (fazer uma estimativa)
-'''
-# %%
-df_blizzard_salary['percent_incr'].value_counts()
-'''
-talvez faça sentido criar agrupamentos de incremento. Porém, a grande maioria foi até 4%
-'''
-
-
-# %% [markdown]
 
 
 '''
@@ -358,34 +410,6 @@ Média por hora = 30.29 * 2,080(hours by year) = 63,0003.20
 
 
 
-# %%
-# Create boolean masks for salaries greater than and less than or equal to the average salary
-greater_than_avg = df_blizzard_salary['current_salary'] > df_blizzard_salary['current_salary'].mean()
-lower_than_avg = df_blizzard_salary['current_salary'] <= df_blizzard_salary['current_salary'].mean()
-
-# %%
-# Identify employees with a current salary less than or equal to $1000
-lower_than_1k = df_blizzard_salary['current_salary'] <= 1000
-
-# %%
-# Create a new DataFrame containing only employees with a salary less than or equal to $1000
-lower_than_1k_slice = df_blizzard_salary[lower_than_1k].copy()
-
-# %%
-# Display the filtered DataFrame for salaries less than or equal to $1000
-lower_than_1k_slice
-
-# %%
-# Create a boolean mask for employees whose salary type is 'year'
-lower_than_1k_year = lower_than_1k_slice['salary_type'] == 'year'
-
-# %%
-# Count occurrences of each salary type among employees earning less than or equal to $1000
-lower_than_1k_year.value_counts()
-
-# %%
-# Display all employees with a current salary less than or equal to $1000
-df_blizzard_salary[lower_than_1k]
 
 # %%
 # Count occurrences of each status in the DataFrame
