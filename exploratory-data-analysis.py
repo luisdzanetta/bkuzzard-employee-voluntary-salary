@@ -52,21 +52,18 @@
 # ## **Exploratory Data Analysis**
 
 # %% [markdown]
-# ### **Understanding Variables**
-
-# %% [markdown]
 # #### **Libraries Import**
 
 # %%
 import pandas as pd
 import numpy as np
-
 import matplotlib.pyplot as plt
 import seaborn as sns
+from fuzzywuzzy import process
 
 # %% [markdown]
 # #### **Data Load**
-# ---
+
 # %%
 # Read the CSV file containing Blizzard employee salary data
 df_blizzard_salary = pd.read_csv('./data/blizzard_salary.csv')
@@ -103,6 +100,9 @@ df_blizzard_salary.dtypes
 df_blizzard_salary.describe()
 
 # %% [markdown]
+# ### **Understanding Variables**
+
+# %% [markdown]
 # #### **Categorical Variables**
 
 # %%[markdown]
@@ -134,35 +134,16 @@ plt.show()
 # 3. Non-standardized job titles (e.g., 'Customer Support Specialist Game Master' vs 'Game Master').
 # 4. Incomplete entries (e.g., 'Senior 1', 'X', or 'Can't say').
 
-# 1. Falta de padronização no nível dos cargos (e.g., I e 1);
-# 2. Falta de padronização na senioridade dos cargos (e.g., exemplo: Sr. e Senior);
-# 3. Falta de padronização no preenchimento do cargo:
-# - 'Customer Support Specialist Game Master' e 'Game Master' 'Game Master TR';
-# - 'Associate Character Artist', 'Associate 3D Artist', 'Associate 3D Artist (Character Artist)', 'Associate Artist';
-# - 'User Researcher', 'UX Researcher';
-# - 'Senior Software Egr 1.-';
-# - 'Principle Software Engineer I';
-# - 'Analyst, Threat Intelligence and Partner Services';
-# - 'Associate PM (my range is on the same scale as PM, but not my actual title)';
-# 4. Preenchimentos incompletos:
-# - 'Senior 1';
-# - 'Position in II tier';
-# - 'X';
-# - 'Can't say (loss of anonimity)';
-# - 'Choose not to disclose';
-# 5. Indicações de 'Temp' e'In Test';
-# 6. Falta de padronização de letras maiúsculas/minúsculas.
-
 # %%
 # This counts occurrences of each job title
 print(df_blizzard_salary['current_title'].value_counts())
 
 # %%
-# 
+# Get the top 20 most common job titles
 top_titles = df_blizzard_salary['current_title'].value_counts().nlargest(20)
 
 # %%
-# 
+# Sort the DataFrame by current title
 df_blizzard_salary_sorted = df_blizzard_salary.sort_values(by='current_title')
 
 print(df_blizzard_salary_sorted['current_title'].unique())
@@ -318,6 +299,71 @@ plt.title('Salary Raise (%)')
 
 plt.show()
 
+# %% [markdown]
+# ### **Data Cleaning and Curation**
+# ##### tratamento do current_title
+
+# %%
+# act = adjusted current title
+# Create a copy of the original DataFrame for adjustments
+df_blizzard_salary_act = df_blizzard_salary.copy()
+
+# Drop rows where 'current_salary' is NaN
+df_blizzard_salary_act = df_blizzard_salary_act.dropna(subset=['current_salary'])
+
+# Drop rows where 'current_title' is NaN
+df_blizzard_salary_act = df_blizzard_salary_act.dropna(subset=['current_title'])
+
+# Create a new column 'adjusted_title' with lowercase titles
+df_blizzard_salary_act['adjusted_title'] = df_blizzard_salary_act['current_title'].str.lower()
+
+# Reorder columns in the DataFrame
+colunas = ['timestamp', 'status', 'current_title', 'adjusted_title', 'current_salary', 'salary_type',
+       'percent_incr', 'other_info', 'location', 'performance_rating']
+
+df_blizzard_salary_act = df_blizzard_salary_act.reindex(colunas, axis=1)
+
+
+# %%
+# Function to Replace Terms Using Regex
+def replace_terms(DataFrame, columns, replacements):
+    for col in columns:
+        for oldvalue, newvalue in replacements.items():
+            DataFrame[col] = DataFrame[col].str.replace(oldvalue, newvalue, regex=True)
+
+# Substitution Dictionary
+replacements = {
+    # Drop Incomplete entries
+    r'\bx\b': '',
+    r'\bposition in ii tier\b': '',
+    r".*can't say \(loss of anonimity\).*": '',
+    r'\bchoose not to disclose\b': '',
+    r'\bsenior i\b': '',
+
+    # Inconsistencies in seniority descriptors
+    r'\bsr\.': 'senior',
+    r'\bsenor': 'senior',
+
+    # Lack of standardization in job levels
+    r'\b1': 'i',
+    r'\b2': 'ii',
+
+    # Non-standardized job titles
+    r'.*senior software egr i\.\-.*': 'senior software engineer i',
+    r'.*associate pm \(my range is on the same scale as pm, but not my actual title\)*': 'associate pm',
+    r'.*principle*': 'principal',
+    r'.*3d artist\(character\)*': '3d artist (character artist)',
+    r'.*ui \/ux designer*': 'ui/ux designer',
+    r'.*associate software development engineer in test*': 'associate software developer engineer in test',
+    r'.*qa*': 'qa analyst',
+}
+
+# Applying Replacements
+replace_terms(df_blizzard_salary_act, ['adjusted_title'], replacements)
+
+# %%
+# Check specific adjusted titles
+df_blizzard_salary_act[df_blizzard_salary_act['adjusted_title'].str.contains(r".*qa.*", na=False)]['adjusted_title']
 
 
 
@@ -325,6 +371,58 @@ plt.show()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# %%
+
+def replace_terms(DataFrame, columns, replacements):
+    for col in columns:
+        for oldvalue, newvalue in replacements.items():
+            DataFrame[col] = DataFrame[col].str.replace(oldvalue, newvalue, regex=True)
+
+
+# %%
+replacements = {
+    r'\bx\b': '',
+    r'\bposition in II tier\b': '',
+    r"\bcan't say \(loss of anonimity\)\b": '',
+    r'\bchoose not to disclose\b': '',
+    r'\bsr\.\b': 'senior',
+    r'\bsenor\.\b': 'senior',
+    r'senior software egr 1\.\-\.': 'senior software engineer',
+    r'\b1\b': 'i',
+    r'\b2\b': 'ii',
+    r'\b3\b': 'iii'
+}
+
+# %%
+# Aplicar todas as substituições de uma vez
+df_blizzard_salary_current_status_adjusted = replace_terms(df_blizzard_salary_current_status_adjusted, ['current_title'], replacements)
+
+# %%
+print(df_blizzard_salary_current_status_adjusted)
+
+
+
+# %%
+print(df_blizzard_salary_current_status_adjusted['current_title'].unique())
+# print(df_blizzard_salary['current_title'].value_counts())
+
+# %%
+print(df_blizzard_salary.isnull().sum())
+print(df_blizzard_salary_current_status_adjusted.isnull().sum())
 
 
 
@@ -497,8 +595,7 @@ df_blizzard_salary
 
 
 
-# %% [markdown]
-# ### **Data Cleaning and Curation**
+
 
 # %% [markdowm]
 # ### **Exploring Relationships Between Variables**
