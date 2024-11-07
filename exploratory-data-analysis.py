@@ -409,56 +409,39 @@ replacements_performance_rating = {
 # Applying Replacements
 replace_terms(df_blizzard_salary_act, ['performance_rating'], replacements_performance_rating)
 
-
-
-
-
-
-
-
-
-
-
-
+# ##### Treatment of current_salary
+# To estimate the salary of users who reported hourly/weekly wages, the following formula was used:
+# Annual Salary = Hourly Rate × Hours per Week × Weeks per Year
 
 # %%
+# Create a new column 'adjusted_salary'
+df_blizzard_salary_act['adjusted_salary'] = df_blizzard_salary_act['current_salary']
 
-def replace_terms(DataFrame, columns, replacements):
-    for col in columns:
-        for oldvalue, newvalue in replacements.items():
-            DataFrame[col] = DataFrame[col].str.replace(oldvalue, newvalue, regex=True)
+colunas = ['timestamp', 'status', 'current_title', 'adjusted_title', 'current_salary', 'adjusted_salary', 'salary_type',
+       'percent_incr', 'other_info', 'location', 'performance_rating']
 
-
-# %%
-replacements = {
-    r'\bx\b': '',
-    r'\bposition in II tier\b': '',
-    r"\bcan't say \(loss of anonimity\)\b": '',
-    r'\bchoose not to disclose\b': '',
-    r'\bsr\.\b': 'senior',
-    r'\bsenor\.\b': 'senior',
-    r'senior software egr 1\.\-\.': 'senior software engineer',
-    r'\b1\b': 'i',
-    r'\b2\b': 'ii',
-    r'\b3\b': 'iii'
-}
+df_blizzard_salary_act = df_blizzard_salary_act.reindex(colunas, axis=1)
 
 # %%
-# Aplicar todas as substituições de uma vez
-df_blizzard_salary_current_status_adjusted = replace_terms(df_blizzard_salary_current_status_adjusted, ['current_title'], replacements)
+# Function to Adjust Salary Based on Type
+def adjust_salary(row):
+    if row['salary_type'] == 'year':
+        return row['current_salary']
+    elif row['salary_type'] == 'weekly':
+        return row['current_salary'] * 52
+    elif row['salary_type'] == 'hour':
+        return row['current_salary'] * 40 * 52
+
+df_blizzard_salary_act['adjusted_salary'] = df_blizzard_salary_act.apply(adjust_salary, axis=1)
 
 # %%
-print(df_blizzard_salary_current_status_adjusted)
-
-
-
-# %%
-print(df_blizzard_salary_current_status_adjusted['current_title'].unique())
-# print(df_blizzard_salary['current_title'].value_counts())
+# Check adjusted salaries
+df_blizzard_salary_act = df_blizzard_salary_act.drop(df_blizzard_salary_act[df_blizzard_salary_act['adjusted_salary'] == 1.0].index)
 
 # %%
-print(df_blizzard_salary.isnull().sum())
-print(df_blizzard_salary_current_status_adjusted.isnull().sum())
+df_blizzard_salary_act
+
+
 
 
 
