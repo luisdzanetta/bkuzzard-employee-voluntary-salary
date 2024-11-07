@@ -332,7 +332,7 @@ def replace_terms(DataFrame, columns, replacements):
             DataFrame[col] = DataFrame[col].str.replace(oldvalue, newvalue, regex=True)
 
 # Substitution Dictionary
-replacements = {
+replacements_title = {
     # Drop Incomplete entries
     r'\bx\b': '',
     r'\bposition in ii tier\b': '',
@@ -359,20 +359,33 @@ replacements = {
 }
 
 # Applying Replacements
-replace_terms(df_blizzard_salary_act, ['adjusted_title'], replacements)
+replace_terms(df_blizzard_salary_act, ['adjusted_title'], replacements_title)
 
 # %%
 # Check specific adjusted titles
 df_blizzard_salary_act[df_blizzard_salary_act['adjusted_title'].str.contains(r".*qa.*", na=False)]['adjusted_title']
 
+# ##### Treatment of location
 
+# %%
+# Convert all location entries to lowercase
+df_blizzard_salary_act['location'] = df_blizzard_salary_act['location'].str.lower()
+df_blizzard_salary_act['location'].value_counts()
 
+# %%
+# Drop rows where 'location' is 'laid off 3/16'
+df_blizzard_salary_act = df_blizzard_salary_act.drop(df_blizzard_salary_act[df_blizzard_salary_act['location'] == 'laid off 3/16'].index)
 
+# %%
+# Substitution Dictionary
+replacements_location = {
+    # Non-standardized location
+    r'.*los angeles center studios.*': 'los angeles',
+    r'.*work from home - virginia*': 'virginia',
+}
 
-
-
-
-
+# Applying Replacements
+replace_terms(df_blizzard_salary_act, ['location'], replacements_location)
 
 
 
