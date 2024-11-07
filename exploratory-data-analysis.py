@@ -323,6 +323,8 @@ colunas = ['timestamp', 'status', 'current_title', 'adjusted_title', 'current_sa
 
 df_blizzard_salary_act = df_blizzard_salary_act.reindex(colunas, axis=1)
 
+# %%
+df_blizzard_salary_act.head()
 
 # %%
 # Function to Replace Terms Using Regex
@@ -355,7 +357,7 @@ replacements_title = {
     r'.*3d artist\(character\)*': '3d artist (character artist)',
     r'.*ui \/ux designer*': 'ui/ux designer',
     r'.*associate software development engineer in test*': 'associate software developer engineer in test',
-    r'.*qa*': 'qa analyst',
+    r'\bqa\b(?!\s\w)': 'qa analyst',
 }
 
 # Applying Replacements
@@ -386,6 +388,27 @@ replacements_location = {
 
 # Applying Replacements
 replace_terms(df_blizzard_salary_act, ['location'], replacements_location)
+
+# ##### Treatment of performance_rating
+
+# %%
+# Convert all performance_rating entries to lowercase
+df_blizzard_salary_act['performance_rating'] = df_blizzard_salary_act['performance_rating'].str.lower()
+df_blizzard_salary_act['performance_rating'].value_counts()
+
+# %%
+# Substitution Dictionary
+replacements_performance_rating = {
+    # Non-standardized location
+    r'.*developing.*': '1-developing',
+    r'.*successful.*': '2-successful',
+    r'.*high.*': '3-high',
+    r'.*top.*': '4-top',
+}
+
+# Applying Replacements
+replace_terms(df_blizzard_salary_act, ['performance_rating'], replacements_performance_rating)
+
 
 
 
