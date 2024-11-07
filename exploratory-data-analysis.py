@@ -301,7 +301,7 @@ plt.show()
 
 # %% [markdown]
 # ### **Data Cleaning and Curation**
-# ##### tratamento do current_title
+# ##### Treatment of current_title
 
 # %%
 # act = adjusted current title
