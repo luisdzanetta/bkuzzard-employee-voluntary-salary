@@ -5,19 +5,18 @@
 
 # %% [markdown]
 # ## **Context**
-# Blizzard Entertainment, Inc. is a prominent American video game developer and publisher located in Irvine, California, and operates as a subsidiary of Activision Blizzard. Established in 1991, the company is renowned for its creation of the influential MMORPG World of Warcraft (2004) and successful franchises such as Diablo, StarCraft, and Overwatch.
+# Blizzard Entertainment, Inc. is a prominent American video game developer and publisher located in Irvine, California, and operates as a subsidiary of Activision Blizzard.
+# Established in 1991, the company is renowned for its creation of the influential MMORPG World of Warcraft (2004) and successful franchises such as Diablo, StarCraft, and Overwatch.
 # Blizzard also runs Battle.net, an online gaming platform [1].
 #
-# In 2020, employees at Blizzard have taken steps to address concerns regarding wage disparities by circulating an anonymous spreadsheet detailing salaries and pay increases. This initiative reflects growing discontent within the company, particularly following a 2019 internal survey that revealed significant dissatisfaction with compensation among staff. With many employees feeling undervalued despite the company's financial success,
-# this analysis aims to explore the salary data shared by employees to uncover patterns and insights related to compensation equity across different roles within Blizzard.
-# By examining this data, we hope to shed light on the broader issues of wage disparity and employee satisfaction in the gaming industry [2].
+# In 2020, employees at Blizzard have taken steps to address concerns regarding wage disparities by circulating an anonymous spreadsheet detailing salaries and pay increases.
+# This initiative reflects growing discontent within the company, particularly following a 2019 internal survey that revealed significant dissatisfaction with compensation among staff [2].
 #
 # <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Blizzard_Entertainment_Logo_2015.svg/1200px-Blizzard_Entertainment_Logo_2015.svg.png" width="300" height="156.25">
-#
 
 # %% [markdown]
 # ## **Objective**
-# 
+# This analysis aims to explore the salary data shared by employees to uncover patterns and insights related to compensation equity across different roles within Blizzard.
 
 # %% [markdown]
 # ## **Dictionary**
@@ -47,14 +46,13 @@
 # 4. [OpenInto, 2020](https://www.openintro.org/data/index.php?data=blizzard_salary)
 # 5. [Kaggle, 2024](https://www.kaggle.com/datasets/mexwell/blizzard-employee-voluntary-salary-info)
 # 6. [Ellow, 2024](https://ellow.io/contract-work-vs-full-time-employment/)
+# 7. [IT Career Finder, 2023](https://www.itcareerfinder.com/brain-food/it-salaries/computer-software-engineer-salary-range.html)
 
 # %% [markdown]
 # ## **Exploratory Data Analysis**
 
 # %% [markdown]
-# #### **Libraries Import**
-
-# %%
+# ### **Libraries Import**
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -62,14 +60,14 @@ import seaborn as sns
 from matplotlib.ticker import FuncFormatter
 
 # %% [markdown]
-# #### **Data Load**
+# ### **Data Load**
 
 # %%
 # Read the CSV file containing Blizzard employee salary data
 df_blizzard_salary = pd.read_csv('./data/blizzard_salary.csv')
 
 # %% [markdown]
-# #### **Dataframe infos**
+# ### **Dataframe infos**
 
 # %%
 # Display memory usage information of the DataFrame
@@ -109,11 +107,15 @@ df_blizzard_salary.describe()
 # **Status**
 #
 # The 'status' column has two contract options: Full Time Employee and Contractor
-# Full Time Employee refers to conventional employment (similar to CLT in Brazil), while Contractor resembles freelance work. [6]
+# Full Time Employee refers to conventional employment (similar to CLT in Brazil), while Contractor resembles freelance work [6].
 
 # %%
 # This displays unique employment statuses
 print(df_blizzard_salary['status'].unique())
+
+# %%
+# This displays employment statuses by status proportion
+print(df_blizzard_salary['status'].value_counts(normalize=True))
 
 # %%
 # Visualization of employment status distribution using a histogram
@@ -321,7 +323,7 @@ axs[1].xaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{int(x/1000)}k'))
 plt.show()
 
 # %%[markdown]
-# **Current Salary**
+# **Percent Increase**
 #
 # In this variable, we have the percentage increase that employees received in 2020.
 
@@ -499,6 +501,17 @@ df_blizzard_salary_vf = df_blizzard_salary_act
 # %% [markdown]
 # #### **Exploring Relationships Between Variables**
 
+# %% [markdown]
+# **What are the highest- and lowest-paying positions?**
+# 
+# In the top 5 salaries, there are 3 positions within the **software engineering** function.
+# Software engineers design, develop, test, and maintain software.
+# They gather requirements, plan architecture, write code, ensure quality, and support software post-launch.
+# They also collaborate with teams and document their work to keep projects aligned with user needs.
+# Software engineering is a high-paid role because it requires specialized
+# skills, critical thinking, and a deep understanding of technology to build complex,
+# reliable systems that meet specific business or user needs. 
+
 # %%
 # Calculate top/bottom average salary
 top_10_salaries = df_blizzard_salary_vf.groupby(['adjusted_title'])['adjusted_salary'].mean().sort_values(ascending=False).nlargest(10)
@@ -537,7 +550,11 @@ sns.barplot(x=bottom_10_salaries.values,
             palette='viridis',
             errorbar=None)
 
+axs.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{int(x/1000)}k'))
+
 plt.title('Bottom 10 Salaries by Job Title')
+plt.xlabel('Adjusted Salary')
+plt.ylabel('Job Title')
 
 plt.show()
 
@@ -550,10 +567,17 @@ formatted_output = f"The difference between the lowest and highest salary is {de
 print(formatted_output)
 
 # %% [markdown]
-# In the top 5 salaries, there are 3 positions within the software engineering function.
-# Let's check the performance and average increment for employees with "software engineer" in their title.
-# We note that the average increment for software engineers is higher than for those who are not.
+# **Do Software Engineers have higher salary increase percentages and performance levels than other positions?**
+#
+# In general, salary increase percentages in software engineering are higher than in other positions.
+# However, when it comes to performance, the difference is not as significant.
+# We have more software engineers mainly in the "Developing" stage.
+#
+# Higher salary increases in software engineering are often driven by high demand, market expectations, and retention strategies, rather than performance alone.
+# The focus in software engineering is often on technical development, with many engineers still in the "Developing" stage.
+# Additionally, the complexity of measuring performance and the need for continuous learning contribute to these higher increases without necessarily reflecting higher performance levels compared to other fields.
 
+# %%
 # Percentage increase for software engineers
 software_engineer_incr_mean = df_blizzard_salary_vf.groupby([df_blizzard_salary_vf['adjusted_title'].str.contains(r'software engineer')])['percent_incr'].mean()
 software_engineer_incr_mean_df = software_engineer_incr_mean.reset_index()
@@ -616,20 +640,12 @@ print(df_blizzard_salary_vf.loc[
     (df_blizzard_salary_vf['performance_rating'] == '1-developing'), 
     ['adjusted_title', 'current_salary', 'performance_rating', 'percent_incr']])
 
-# %%
-# Calculate the average salary for software engineers in each job title category
-df_blizzard_salary_vf.groupby([df_blizzard_salary_vf['adjusted_title'].str.contains(r'software engineer')])['adjusted_salary'].describe()
-
-# %%
-# Calculate the number of software engineers in each job title category
-print(df_blizzard_salary_vf[df_blizzard_salary_vf['adjusted_title'].str.contains(r'software engineer')]['adjusted_title'].value_counts())
-
 # %% [markdown]
 # ##### Salary Comparison with Market Data
 # How do Blizzard salaries compare to market rates?
 # I tried to find salary ranges for software engineers in the United States in 2020:
 #
-# Software engineer salary range by year of experience [x].
+# Software engineer salary range by year of experience [7].
 #
 # | Job Level/Title                            |  Years of Experience           | Base Salary Range
 # | :-----------------------:                  |:-----------------------:       |:-----------------------: 
@@ -763,7 +779,7 @@ plt.show()
 # %%
 # Correlation between salary and performance rating
 filtered_data = df_blizzard_salary_vf[df_blizzard_salary_vf['adjusted_title'].str.contains(r'software engineer', case=False)]
-filtered_data = filtered_data.sort_values('performance_rating')
+filtered_data = filtered_data.sort_values(by='performance_rating', ascending=False)
 
 fig, axs = plt.subplots(1, 1, figsize=(12, 5))
 
@@ -787,4 +803,18 @@ plt.ylabel('Performance Rating')
 
 plt.show()
 
+# %%[markdown]
+# ### **Conclusion:**
+
+# **Competitive Starting Salaries:** Blizzard offers higher entry-level salaries than the general market, with a 31.67% premium at the lower end.
+# This could reflect a strategy to attract fresh talent and ensure new engineers see Blizzard as a competitive employer from the start.
+#
+# **Sustained Mid-Level Competitiveness:** For mid-level engineers, Blizzard maintains a salary advantage, particularly on the lower end (+25%).
+# This might indicate an emphasis on retaining mid-career professionals, as this experience level often brings critical technical expertise and operational knowledge without the full cost of seniority.
+#
+# **Senior Level Premiums Reflect Increased Value:** At the senior level, Blizzard’s salary range continues to outpace the market, especially at the upper limit (+28.57%).
+# This suggests that Blizzard is willing to invest in experienced engineers who bring strategic value, likely due to the higher impact of their work on core products and teams.
+#
+# **Substantial Principal Level Premiums at Lower Range:** The principal engineer role shows the largest salary difference on the lower end (+43.08%), suggesting Blizzard is competitive in attracting high-level engineering talent.
+# The smaller discrepancy at the upper range (+8%) may indicate Blizzard aligns top-end principal salaries with the broader market, possibly reflecting an industry standard at this level.
 # %%
