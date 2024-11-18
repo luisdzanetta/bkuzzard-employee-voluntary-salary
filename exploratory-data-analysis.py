@@ -38,17 +38,6 @@
 # | performance_rating          |Most recent review performance rating               |
 
 # %% [markdown]
-# ## **References**
-#
-# 1. [Wikipedia, 2024](https://en.wikipedia.org/wiki/Blizzard_Entertainment)
-# 2. [Time, 2020](https://time.com/5875371/blizzard-wage-disaparities/)
-# 3. [Bloomberg, 2020](https://www.bloomberg.com/news/articles/2020-08-03/blizzard-workers-share-salaries-in-revolt-over-wage-disparities)
-# 4. [OpenInto, 2020](https://www.openintro.org/data/index.php?data=blizzard_salary)
-# 5. [Kaggle, 2024](https://www.kaggle.com/datasets/mexwell/blizzard-employee-voluntary-salary-info)
-# 6. [Ellow, 2024](https://ellow.io/contract-work-vs-full-time-employment/)
-# 7. [IT Career Finder, 2023](https://www.itcareerfinder.com/brain-food/it-salaries/computer-software-engineer-salary-range.html)
-
-# %% [markdown]
 # ## **Exploratory Data Analysis**
 
 # %% [markdown]
@@ -817,4 +806,27 @@ plt.show()
 #
 # **Substantial Principal Level Premiums at Lower Range:** The principal engineer role shows the largest salary difference on the lower end (+43.08%), suggesting Blizzard is competitive in attracting high-level engineering talent.
 # The smaller discrepancy at the upper range (+8%) may indicate Blizzard aligns top-end principal salaries with the broader market, possibly reflecting an industry standard at this level.
-# %%
+
+# %%[markdown]
+# ### **Limitations:**
+
+# Despite the conclusions drawn from the analyses,
+# it is important to exercise caution when interpreting and extrapolating the results,
+# as there are some limitations:
+#
+# **Sample Bias:** The data might not represent the entire Blizzard employee population.
+# Participation in the anonymous survey may have been skewed towards specific demographics or job roles.
+#
+# **External Market Data:** Salary ranges from the tech industry were used for comparison with Blizzard's salaries.
+# However, the accuracy of the salary data from this source is uncertain, which may affect the reliability of the analysis.
+
+# %% [markdown]
+# ## **References**
+#
+# 1. [Wikipedia, 2024](https://en.wikipedia.org/wiki/Blizzard_Entertainment)
+# 2. [Time, 2020](https://time.com/5875371/blizzard-wage-disaparities/)
+# 3. [Bloomberg, 2020](https://www.bloomberg.com/news/articles/2020-08-03/blizzard-workers-share-salaries-in-revolt-over-wage-disparities)
+# 4. [OpenInto, 2020](https://www.openintro.org/data/index.php?data=blizzard_salary)
+# 5. [Kaggle, 2024](https://www.kaggle.com/datasets/mexwell/blizzard-employee-voluntary-salary-info)
+# 6. [Ellow, 2024](https://ellow.io/contract-work-vs-full-time-employment/)
+# 7. [IT Career Finder, 2023](https://www.itcareerfinder.com/brain-food/it-salaries/computer-software-engineer-salary-range.html)
