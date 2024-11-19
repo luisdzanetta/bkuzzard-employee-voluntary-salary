@@ -1,7 +1,7 @@
 # Blizzard Employee Voluntary Salary Exploratory Data Analysis
 
 ## Project Overview
-The **Blizzard Employee Voluntary Salary Analysis** project aims to explore and analyze the voluntary salary data of employees at Blizzard Entertainment. By examining this data, we seek to uncover insights into salary distributions, trends across different job titles, and the impact of various factors such as experience and location on employee compensation. The ultimate goal is to provide a comprehensive understanding of how salaries are structured within the company.
+The **Blizzard Employee Voluntary Salary Exploratory Data Analysis** project aims to explore and analyze the voluntary salary data of employees at Blizzard Entertainment. By examining this data, we seek to uncover insights into salary distributions, trends across different job titles, and the impact of various factors such as experience and location on employee compensation. The ultimate goal is to provide a comprehensive understanding of how salaries are structured within the company.
 
 ## Installation Instructions
 To set up this project on your local machine, please follow these steps:
