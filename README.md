@@ -7,19 +7,19 @@ The **Blizzard Employee Voluntary Salary Analysis** project aims to explore and 
 To set up this project on your local machine, please follow these steps:
 
 1. **Clone the repository**:
-```bash
+   ```bash
    git clone https://github.com/luisdzanetta/blizzard-employee-voluntary-salary.git
-```
+   ```
    
 2. **Navigate to the project directory:**
-```bash
+   ```bash
     cd blizzard-employee-voluntary-salary
-```
+   ```
 
 3. **Install required dependencies:**
-```bash
+   ```bash
     pip install -r requirements.txt
-```
+   ```
 
 ## Data Source
 The data used in this project was sourced from:
@@ -27,6 +27,8 @@ The data used in this project was sourced from:
 https://www.kaggle.com/datasets/mexwell/blizzard-employee-voluntary-salary-info
 
 ## Project Structure
+
+```plaintext
 .
 ├── data                                # Directory containing raw dataset
 ├── README.md                           # Project documentation
@@ -34,6 +36,7 @@ https://www.kaggle.com/datasets/mexwell/blizzard-employee-voluntary-salary-info
 ├── exploratory-data-analysis.py        # Main script .py
 ├── requirements.txt                    # Project dependencies
 └── LICENSE                             # Project license
+```
 
 ## Conclusions and Limitations
 
@@ -67,3 +70,10 @@ Participation in the anonymous survey may have been skewed towards specific demo
 ## License
 This project is licensed under the MIT License. Please refer to the LICENSE file for details.
 The dataset is subject to its own licensing agreements; please review those before use.
+
+## Contact
+**Name:** Luís D`Avoglio Zanetta
+
+**Email:** luis.dzanetta@gmail.com
+
+**GitHub:** luisdzanetta
