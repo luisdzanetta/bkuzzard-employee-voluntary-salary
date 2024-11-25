@@ -636,12 +636,12 @@ print(df_blizzard_salary_vf.loc[
 #
 # Software engineer salary range by year of experience [7].
 #
-# | Job Level/Title                            |  Years of Experience           | Base Salary Range
-# | :-----------------------:                  |:-----------------------:       |:-----------------------: 
-# | Entry/Junior-level software engineer       | 0-3                            | $60-100k
-# | Mid-level software engineer                | 3-5                            | $80-130k
-# | Senior software engineer                   | 5-7                            | $100-140k
-# | Principal sofware engineer                 | 7+                             | $130-200k
+# | Job Level/Title                            |  Years of Experience           | Base Salary Range        |
+# | :-----------------------:                  |:-----------------------:       |:-----------------------: |
+# | Entry/Junior-level software engineer       | 0-3                            | $60-100k                 |
+# | Mid-level software engineer                | 3-5                            | $80-130k                 |
+# | Senior software engineer                   | 5-7                            | $100-140k                |
+# | Principal sofware engineer                 | 7+                             | $130-200k                |
 
 # %%
 # Create a new column 'software_engineer_group'
